@@ -3,6 +3,17 @@
 
 C# library for interacting with files from the 1995 game Tyrian, developed by Eclipse Software.
 
+| Name   | Read | Write | Comment
+|--------|:----:|-------|--------
+| DAT    | ✔   |   ✗   | Graphics
+| DAT    | ✔   |   ✗   | Text
+| LVL    | ✔   |   ✗   | Level
+| PCX    | ✗   |   ✗   | 
+| PIC    | ✗   |   ✗   | 
+| SAV    | ✗   |   ✗   | 
+| SHP    | ✔   |   ✗   | Graphics
+| SND    | ✗   |   ✗   | 
+
 ## Usage
 
 To edit a file you should instantiate the relevant class and call the `Read` method passing the filename.
@@ -11,13 +22,36 @@ To edit a file you should instantiate the relevant class and call the `Read` met
 using ii.Nairyt;
 using SixLabors.ImageSharp;
 
-var exports = ShpProcessor.Read(@"D:\games\Tyrian\tyrian.SHP", @"D:\games\Tyrian\PALETTE.DAT");
+// encrypted text
+var txt = DatProcessor.Read(@"D:\games\tyrian\cubetxt1.dat");
 
+
+// Levels
+var graphics = new List<string>() {
+@"D:\games\tyrian\shapes).dat",
+@"D:\games\tyrian\shapesw.dat",
+@"D:\games\tyrian\shapesx.dat",
+@"D:\games\tyrian\shapesy.dat",
+@"D:\games\tyrian\shapesz.dat" };
+
+var levels = LvlProcessor.Read(@"D:\games\tyrian\tyrian.lvl", @"D:\games\tyrian\palette.dat", graphics);
+foreach (var level in levels)
+{
+    File.WriteAllText($@"D:\data\Tyrian\{level.Name}.tmx", level.Content);
+
+    if (level.Tileset is not null)
+    {
+        level.Tileset.Image.SaveAsPng($@"D:\data\Tyrian\{level.Tileset.Name}.png");
+    }
+}
+
+
+// Graphics
+var exports = ShpProcessor.Read(@"D:\games\tyrian\tyrian.shp", @"D:\games\tyrian\palette.dat");
 var writtenFiles = new List<string>(exports.Count);
-
 foreach (var export in exports)
 {
-    var outputPath = Path.Combine(@"X:\data\Tyrian\", $"{export.Name}.png");
+    var outputPath = Path.Combine(@"X:\data\tyrian\", $"{export.Name}.png");
     export.Image.SaveAsPng(outputPath);
     writtenFiles.Add(outputPath);
 }
