@@ -32,4 +32,8 @@ internal static class TyrianConstants
     public const int Layer2CompressedRows = 600;
     public const int Layer3CompressedColumns = 15;
     public const int Layer3CompressedRows = 600;
+
+    public const int SndDefaultSampleRate = 11025;
+    public const int VoiceSampleTrimBytes = 100;
+    public const int SndMaxSampleBytes = ushort.MaxValue;
 }
