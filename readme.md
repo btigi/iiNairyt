@@ -1,20 +1,26 @@
-﻿iiSingleMve
+﻿iiNairyt
 =========
 
-C# library for interacting with Interplay MVE files, as used in Baldur's Gate, Descent, M.A.X and more.
+C# library for interacting with files from the 1995 game Tyrian, developed by Eclipse Software.
 
 ## Usage
 
-Install the [nuget package](https://www.nuget.org/packages/ii.SingleMve/) e.g.
-
-`dotnet add package ii.SingleMve`
-
-To edit a file you should instantiate the relevant class and call the `Read` method passing the filename. This will return an object model, which you can amend, before calling the `Write` method.
+To edit a file you should instantiate the relevant class and call the `Read` method passing the filename.
 
 ```csharp
-var mveProcessor = new MveProcessor();
-var avi = mveProcessor.Read(@"D:\data\movie.mve");
-File.WriteAllBytes(@"D:\dat\movie.avi", avi);
+using ii.Nairyt;
+using SixLabors.ImageSharp;
+
+var exports = ShpProcessor.Read(@"D:\games\Tyrian\tyrian.SHP", @"D:\games\Tyrian\PALETTE.DAT");
+
+var writtenFiles = new List<string>(exports.Count);
+
+foreach (var export in exports)
+{
+    var outputPath = Path.Combine(@"X:\data\Tyrian\", $"{export.Name}.png");
+    export.Image.SaveAsPng(outputPath);
+    writtenFiles.Add(outputPath);
+}
 ```
 
 ## Compiling
@@ -23,7 +29,7 @@ To clone and run this repository you'll need [Git](https://git-scm.com) and [.NE
 
 ```
 # Clone this repository
-$ git clone https://github.com/btigi/iiSingleMve
+$ git clone https://github.com/btigi/iiNairyt
 
 # Go into the repository
 $ cd src
@@ -34,9 +40,8 @@ $ dotnet build
 
 ## Licencing
 
-iiSingleMve is licenced under the GPL 2.0 License. Full licence details are available in licence.md
+iiNairyt is licenced under the GPL 2.0 License. Full licence details are available in licence.md
 
 
 ## References
-https://github.com/DescentNetwork/libmve-lgpl2.1
-https://github.com/gemrb/gemrb/
+https://github.com/opentyrian/opentyrian
