@@ -46,6 +46,30 @@ internal class BinaryDataReader
         return _data[_position++];
     }
 
+    public uint ReadUInt32()
+    {
+        if (_position + sizeof(uint) > _data.Length)
+        {
+            throw new InvalidDataException("Unexpected end of data while reading UInt32.");
+        }
+
+        var value = BinaryPrimitives.ReadUInt32LittleEndian(_data.AsSpan(_position));
+        _position += sizeof(uint);
+        return value;
+    }
+
+    public ushort ReadBigEndianUInt16()
+    {
+        if (_position + sizeof(ushort) > _data.Length)
+        {
+            throw new InvalidDataException("Unexpected end of data while reading big-endian UInt16.");
+        }
+
+        var value = BinaryPrimitives.ReadUInt16BigEndian(_data.AsSpan(_position));
+        _position += sizeof(ushort);
+        return value;
+    }
+
     public ReadOnlySpan<byte> ReadBytes(int count)
     {
         if (count < 0 || _position + count > _data.Length)
