@@ -66,4 +66,15 @@ internal static class TyrianConstants
     public const int HdtSharewareOptionCount = 30;
     public const int HdtSharewareShieldCount = 10;
     public const int HdtSharewareEnemyCount = 850;
+
+    public const int PicImageCount = 13;
+    public const int PicWidth = 320;
+    public const int PicHeight = 200;
+    public const byte PicRleRunMarker = 0xC0;
+    public const byte PicRleRunLengthMask = 0x3F;
+
+    public static readonly int[] PicPaletteIndices =
+    [
+        0, 7, 5, 8, 10, 5, 18, 19, 19, 20, 21, 22, 5,
+    ];
 }

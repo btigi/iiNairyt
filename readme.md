@@ -11,7 +11,7 @@ C# library for interacting with files from the 1995 game Tyrian, developed by Ec
 | HDT    | ✔   |   ✗   | Configuration info
 | LVL    | ✔   |   ✗   | Level
 | PCX    | ✗   |   ✗   | 
-| PIC    | ✗   |   ✗   | 
+| PIC    | ✔   |   ✗   | Fullscreen backgrounds
 | SAV    | ✗   |   ✗   | 
 | SHP    | ✔   |   ✗   | Graphics
 | SND    | ✔   |   ✗   | 
@@ -47,6 +47,13 @@ foreach (var level in levels)
     }
 }
 
+
+// Fullscreen backgrounds (13 images in tyrian.pic)
+var pics = PicProcessor.Read(@"D:\games\tyrian\tyrian.pic", @"D:\games\tyrian\palette.dat");
+foreach (var pic in pics)
+{
+    pic.Image.SaveAsPng($@"D:\data\Tyrian\{pic.Name}.png");
+}
 
 // Graphics
 var exports = ShpProcessor.Read(@"D:\games\tyrian\tyrian.shp", @"D:\games\tyrian\palette.dat");
