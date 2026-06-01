@@ -5,8 +5,10 @@ C# library for interacting with files from the 1995 game Tyrian, developed by Ec
 
 | Name   | Read | Write | Comment
 |--------|:----:|-------|--------
+| CDT    | ✔   |   ✗   | Encrypted text
 | DAT    | ✔   |   ✗   | Graphics
-| DAT    | ✔   |   ✗   | Text
+| DAT    | ✔   |   ✗   | Encrypted text
+| HDT    | ✔   |   ✗   | Configuration info
 | LVL    | ✔   |   ✗   | Level
 | PCX    | ✗   |   ✗   | 
 | PIC    | ✗   |   ✗   | 

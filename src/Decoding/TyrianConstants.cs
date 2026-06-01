@@ -36,4 +36,34 @@ internal static class TyrianConstants
     public const int SndDefaultSampleRate = 11025;
     public const int VoiceSampleTrimBytes = 100;
     public const int SndMaxSampleBytes = ushort.MaxValue;
+
+    public const int HdtItemCountFields = 7;
+    public const int HdtHeaderSize = (HdtItemCountFields * sizeof(ushort)) + sizeof(ushort);
+    public const int HdtNameFieldSize = 30;
+    public const int HdtWeaponPatternRecordSize = 0x50;
+    public const int HdtWeaponPortRecordSize = 82;
+    public const int HdtSpecialRecordSize = 37;
+    public const int HdtPowerRecordSize = 37;
+    public const int HdtShipRecordSize = 41;
+    public const int HdtExpandedShipRecordSize = 37;
+    public const int HdtExpandedShipSectionPadding = 4;
+    public const int HdtSidekickRecordSize = 86;
+    public const int HdtShieldRecordSize = 37;
+    public const int HdtExpandedPortSectionPadding = 29;
+    public const int HdtExpandedShipToOptionPadding = 45;
+    public const int HdtWeaponPatternFrames = 8;
+    public const int HdtWeaponFiringModes = 2;
+    public const int HdtWeaponPowerLevels = 11;
+    public const int HdtOptionAnimationFrames = 20;
+    public const int HdtEnemyAnimationFrames = 20;
+    public const int HdtEnemyTurretDirections = 3;
+
+    public const int HdtSharewareWeaponCount = 780;
+    public const int HdtSharewareWeaponPortCount = 42;
+    public const int HdtSpecialCount = 46;
+    public const int HdtSharewarePowerSystemCount = 6;
+    public const int HdtSharewareShipCount = 13;
+    public const int HdtSharewareOptionCount = 30;
+    public const int HdtSharewareShieldCount = 10;
+    public const int HdtSharewareEnemyCount = 850;
 }
