@@ -50,6 +50,45 @@ internal class TyrianHdtHeader
         RawEnemyCount,
     ];
 
+    public int PayloadSize =>
+        (WeaponPatternEntryCount * TyrianConstants.HdtWeaponPatternRecordSize) +
+        (WeaponPortEntryCount * TyrianConstants.HdtWeaponPortRecordSize) +
+        WeaponPortSectionPadding +
+        (SpecialMoveEntryCount * TyrianConstants.HdtSpecialRecordSize) +
+        (PowerGeneratorEntryCount * TyrianConstants.HdtPowerRecordSize) +
+        ShipSectionSize +
+        ShipToOptionSectionPadding +
+        (SidekickOptionEntryCount * TyrianConstants.HdtSidekickRecordSize) +
+        (ShieldEntryCount * TyrianConstants.HdtShieldRecordSize) +
+        (EnemyEntryCount * TyrianConstants.HdtEnemyRecordSize);
+
+    public int ShipSectionSize =>
+        IsExpandedFormat
+            ? (CompactShipEntryCount * TyrianConstants.HdtExpandedShipRecordSize) +
+              ShipSectionPadding +
+              (FullShipEntryCount * TyrianConstants.HdtShipRecordSize)
+            : FullShipEntryCount * TyrianConstants.HdtShipRecordSize;
+
+    public int FileSize => DataOffset + PayloadSize;
+
+    public static TyrianHdtHeader FromItemCounts(int episode1DataOffset, IReadOnlyList<ushort> itemCounts)
+    {
+        if (itemCounts.Count != TyrianConstants.HdtItemCountFields)
+        {
+            throw new ArgumentException($"Expected {TyrianConstants.HdtItemCountFields} item counts, but received {itemCounts.Count}.", nameof(itemCounts));
+        }
+
+        return new TyrianHdtHeader(
+            episode1DataOffset,
+            itemCounts[0],
+            itemCounts[1],
+            itemCounts[2],
+            itemCounts[3],
+            itemCounts[4],
+            itemCounts[5],
+            itemCounts[6]);
+    }
+
     public static TyrianHdtHeader Read(BinaryDataReader reader)
     {
         var episode1DataOffset = reader.ReadInt32();
@@ -73,6 +112,20 @@ internal class TyrianHdtHeader
             rawOptionCount,
             rawShieldCount,
             rawEnemyCount);
+    }
+
+    public void Write(BinaryDataWriter writer)
+    {
+        writer.WriteInt32(Episode1DataOffset);
+        writer.Seek(Episode1DataOffset);
+        writer.WriteUInt16(RawWeaponCount);
+        writer.WriteUInt16(RawWeaponPortCount);
+        writer.WriteUInt16(RawPowerSystemCount);
+        writer.WriteUInt16(RawShipCount);
+        writer.WriteUInt16(RawOptionCount);
+        writer.WriteUInt16(RawShieldCount);
+        writer.WriteUInt16(RawEnemyCount);
+        writer.WriteUInt16(0);
     }
 
     private TyrianHdtHeader(

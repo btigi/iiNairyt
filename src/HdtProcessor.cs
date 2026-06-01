@@ -17,4 +17,13 @@ public static class HdtProcessor
         var data = File.ReadAllBytes(hdtPath);
         return new TyrianHdtDecoder(data).Decode();
     }
+
+    public static void Write(TyrianHdtData data, string hdtPath)
+    {
+        ArgumentNullException.ThrowIfNull(data);
+        ArgumentException.ThrowIfNullOrEmpty(hdtPath);
+
+        var encoded = new TyrianHdtEncoder(data).Encode();
+        File.WriteAllBytes(hdtPath, encoded);
+    }
 }

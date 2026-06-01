@@ -57,6 +57,7 @@ internal static class TyrianConstants
     public const int HdtOptionAnimationFrames = 20;
     public const int HdtEnemyAnimationFrames = 20;
     public const int HdtEnemyTurretDirections = 3;
+    public const int HdtEnemyRecordSize = 75;
 
     public const int HdtSharewareWeaponCount = 780;
     public const int HdtSharewareWeaponPortCount = 42;
