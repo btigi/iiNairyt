@@ -19,4 +19,13 @@ public static class DatProcessor
 
         return new ExportedText(baseName, EncryptedTextDecoder.ReadAllText(data));
     }
+
+    public static void Write(string text, string datPath)
+    {
+        ArgumentNullException.ThrowIfNull(text);
+        ArgumentException.ThrowIfNullOrEmpty(datPath);
+
+        var data = EncryptedTextEncoder.WriteAllText(text);
+        File.WriteAllBytes(datPath, data);
+    }
 }
