@@ -1,42 +1,44 @@
 using System.Buffers.Binary;
 using ii.Nairyt.Imaging;
+using ii.Nairyt.Model;
 using SixLabors.ImageSharp.PixelFormats;
 
 namespace ii.Nairyt.Decoding;
 
 internal static class TyrianCompositeDecoder
 {
-    private static readonly int[] PortraitPaletteIndices =
-    [
-        1, 2, 3, 4, 6, 9, 11, 12, 10, 13, 14, 15,
-    ];
-
-    public static IEnumerable<DecodedImage> Decode(byte[] data, string palettePath)
+    public static IReadOnlyList<DecodedShpBank> DecodeBanks(byte[] data)
     {
         var sectionCount = BinaryPrimitives.ReadUInt16LittleEndian(data);
         var sectionPositions = ReadSectionPositions(data, sectionCount);
         var decoder = new EstscDecoder(data);
-        var defaultPalette = TyrianPalette.Load(palettePath);
+        var banks = new List<DecodedShpBank>(sectionCount);
 
-        var estscSectionCount = Math.Min(TyrianConstants.EstscSectionCount, (int)sectionCount);
-
-        for (var section = 0; section < estscSectionCount; section++)
+        for (var section = 0; section < sectionCount; section++)
         {
-            decoder.Seek(sectionPositions[section]);
-
-            foreach (var decodedImage in ExportEstscSection(decoder.LoadImages(), section, palettePath, defaultPalette))
+            if (section < TyrianConstants.EstscSectionCount)
             {
-                yield return decodedImage;
+                decoder.Seek(sectionPositions[section]);
+                banks.Add(new DecodedShpBank(ShpBankFormat.Estsc, decoder.LoadImages()));
+                continue;
             }
-        }
 
-        var spriteSheetSectionEnd = Math.Min(TyrianConstants.SpriteSheetSectionEnd, (int)sectionCount);
-
-        for (var section = TyrianConstants.SpriteSheetSectionStart; section < spriteSheetSectionEnd; section++)
-        {
             var sectionLength = sectionPositions[section + 1] - sectionPositions[section];
             var sectionData = data.AsSpan(sectionPositions[section], sectionLength);
-            var sprites = SpriteSheetDecoder.DecodeAll(sectionData);
+            banks.Add(new DecodedShpBank(ShpBankFormat.SpriteSheet, SpriteSheetDecoder.DecodeAll(sectionData)));
+        }
+
+        return banks;
+    }
+
+    public static IEnumerable<DecodedImage> Decode(byte[] data, string palettePath)
+    {
+        var defaultPalette = TyrianPalette.Load(palettePath);
+        var banks = DecodeBanks(data);
+
+        for (var section = 0; section < banks.Count; section++)
+        {
+            var sprites = banks[section].Sprites;
 
             for (var index = 0; index < sprites.Count; index++)
             {
@@ -47,9 +49,19 @@ internal static class TyrianCompositeDecoder
                     continue;
                 }
 
-                yield return new DecodedImage($"{section}-{index}", sprite, defaultPalette);
+                yield return new DecodedImage($"{section}-{index}", sprite, PaletteFor(section, index, palettePath, defaultPalette));
             }
         }
+    }
+
+    public static Rgba32[] PaletteFor(int section, int spriteIndex, string palettePath, Rgba32[] defaultPalette)
+    {
+        if (section == TyrianConstants.PortraitSectionIndex && spriteIndex < TyrianConstants.PortraitPaletteIndices.Length)
+        {
+            return TyrianPalette.Load(palettePath, TyrianConstants.PortraitPaletteIndices[spriteIndex]);
+        }
+
+        return defaultPalette;
     }
 
     private static int[] ReadSectionPositions(byte[] data, ushort sectionCount)
@@ -64,23 +76,8 @@ internal static class TyrianCompositeDecoder
         positions[sectionCount] = data.Length;
         return positions;
     }
-
-    private static IEnumerable<DecodedImage> ExportEstscSection(IReadOnlyList<IndexedImage?> images, int section, string palettePath, Rgba32[] defaultPalette)
-    {
-        for (var index = 0; index < images.Count; index++)
-        {
-            var image = images[index];
-
-            if (image is null)
-            {
-                continue;
-            }
-
-            var palette = section == TyrianConstants.PortraitSectionIndex && index < PortraitPaletteIndices.Length ? TyrianPalette.Load(palettePath, PortraitPaletteIndices[index]) : defaultPalette;
-
-            yield return new DecodedImage($"{section}-{index}", image, palette);
-        }
-    }
 }
+
+internal readonly record struct DecodedShpBank(ShpBankFormat Format, IReadOnlyList<IndexedImage?> Sprites);
 
 internal readonly record struct DecodedImage(string Name, IndexedImage Image, Rgba32[] Palette);

@@ -7,6 +7,7 @@ internal static class TyrianConstants
     public const int PaletteSize = PaletteColorCount * PaletteEntrySize;
     public const int PaletteMaxComponent = 63;
     public const byte SpriteRowTerminator = 0x0F;
+    public const int SpriteSheetWidth = 12;
 
     public const byte RleSkipPixels = 255;
     public const byte RleNextRow = 254;
@@ -16,6 +17,11 @@ internal static class TyrianConstants
     public const int SpriteSheetSectionStart = 7;
     public const int SpriteSheetSectionEnd = 12;
     public const int PortraitSectionIndex = 4;
+
+    public static readonly int[] PortraitPaletteIndices =
+    [
+        1, 2, 3, 4, 6, 9, 11, 12, 10, 13, 14, 15,
+    ];
 
     public const int LevelMapWidth = 15;
     public const int LevelMapHeight = 600;

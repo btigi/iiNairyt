@@ -14,16 +14,18 @@ C# library for interacting with files from the 1995 game Tyrian, developed by Ec
 | PCX    | ✗   |   ✗   | 
 | PIC    | ✔   |   ✗   | Fullscreen backgrounds
 | SAV    | ✗   |   ✗   | 
-| SHP    | ✔   |   ✗   | Graphics
+| SHP    | ✔   |   ✔   | Graphics
 | SND    | ✔   |   ✗   | 
 
 ## Usage
 
-To edit a file you should instantiate the relevant class and call the `Read` method passing the filename.
+To edit a file, call the relevant processor's `Read` method, change the result, and pass it to `Write`. `ShpProcessor.Export` turns a loaded SHP file into images.
 
 ```csharp
 using ii.Nairyt;
+using ii.Nairyt.Model;
 using SixLabors.ImageSharp;
+using SixLabors.ImageSharp.PixelFormats;
 
 // encrypted text
 var txt = DatProcessor.Read(@"D:\games\tyrian\cubetxt1.dat");
@@ -57,7 +59,8 @@ foreach (var pic in pics)
 }
 
 // Graphics
-var exports = ShpProcessor.Read(@"D:\games\tyrian\tyrian.shp", @"D:\games\tyrian\palette.dat");
+var shp = ShpProcessor.Read(@"D:\games\tyrian\tyrian.shp");
+var exports = ShpProcessor.Export(shp, @"D:\games\tyrian\palette.dat", "tyrian");
 var writtenFiles = new List<string>(exports.Count);
 foreach (var export in exports)
 {
@@ -65,6 +68,18 @@ foreach (var export in exports)
     export.Image.SaveAsPng(outputPath);
     writtenFiles.Add(outputPath);
 }
+
+var shp = ShpProcessor.Read(@"D:\games\Tyrian\tyrian.shp");
+var palette = TyrianPalette.Load(@"D:\games\Tyrian\palette.dat");
+using var edited = Image.Load<Rgba32>(@"D:\data\Tyrian\tyrian-0-0.png");
+
+const int bankIndex = 0;
+const int spriteIndex = 0;
+
+var banks = shp.Banks.ToArray();
+var sprites = banks[bankIndex].Sprites.ToArray();
+sprites[spriteIndex] = ShpSprite.FromRgba(edited, palette);
+banks[bankIndex] = banks[bankIndex] with { Sprites = sprites };
 ```
 
 ## Compiling
