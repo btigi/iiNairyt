@@ -12,7 +12,7 @@ C# library for interacting with files from the 1995 game Tyrian, developed by Ec
 | LVL    | ✔   |   ✗   | Level
 | MUS    | ✗   |   ✗   | Music
 | PCX    | ✗   |   ✗   | 
-| PIC    | ✔   |   ✗   | Fullscreen backgrounds
+| PIC    | ✔   |   ✔   | Fullscreen backgrounds
 | SAV    | ✗   |   ✗   | 
 | SHP    | ✔   |   ✔   | Graphics
 | SND    | ✔   |   ✗   | 
