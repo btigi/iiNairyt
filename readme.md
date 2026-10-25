@@ -6,7 +6,7 @@ C# library for interacting with files from the 1995 game Tyrian, developed by Ec
 | Name   | Read | Write | Comment
 |--------|:----:|-------|--------
 | CDT    | ✔   |   ✔   | Encrypted text
-| DAT    | ✔   |   ✗   | Graphics
+| DAT    | ✔   |   ✔   | Graphics
 | DAT    | ✔   |   ✔   | Encrypted text
 | HDT    | ✔   |   ✔   | Configuration info
 | LVL    | ✔   |   ✗   | Level
@@ -19,7 +19,7 @@ C# library for interacting with files from the 1995 game Tyrian, developed by Ec
 
 ## Usage
 
-To edit a file, call the relevant processor's `Read` method, change the result, and pass it to `Write`. `ShpProcessor.Export` turns a loaded SHP file into images.
+To edit a file, call the relevant processor's `Read` method, change the result, and pass it to `Write`. `ShpProcessor.Export` and `ShapeDatProcessor.Export` turn loaded graphics into images.
 
 ```csharp
 using ii.Nairyt;
@@ -50,6 +50,13 @@ foreach (var level in levels)
     }
 }
 
+// Shape tileset
+var shapes = ShapeDatProcessor.Read(@"D:\games\tyrian\shapesz.dat");
+var tileset = ShapeDatProcessor.Export(shapes, @"D:\games\tyrian\palette.dat", "shapesz");
+tileset.Image.SaveAsPng(@"D:\data\Tyrian\shapesz.png");
+ShapeDatProcessor.Write(
+    ShapeDatData.FromRgba(tileset.Image, TyrianPalette.Load(@"D:\games\tyrian\palette.dat"), shapes.Trailer),
+    @"D:\data\Tyrian\shapesz.dat");
 
 // Fullscreen backgrounds (13 images in tyrian.pic)
 var pics = PicProcessor.Read(@"D:\games\tyrian\tyrian.pic", @"D:\games\tyrian\palette.dat");

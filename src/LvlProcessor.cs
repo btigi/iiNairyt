@@ -70,7 +70,7 @@ public static class LvlProcessor
             return null;
         }
 
-        var tilesetImage = ShapeDatDecoder.LoadTileset(shapeDatPath).ToRgba32(palette);
+        var tilesetImage = ShapeDatProcessor.ToRgba(ShapeDatProcessor.Read(shapeDatPath), palette);
         var exportedTileset = new ExportedImage(map.TilesetBaseName, tilesetImage);
         tilesetCache[map.TilesetBaseName] = exportedTileset;
         return exportedTileset;
