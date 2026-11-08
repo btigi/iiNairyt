@@ -42,4 +42,12 @@ public static class SndProcessor
 
         return exports;
     }
+
+    public static void Write(IReadOnlyList<ExportedAudio> samples, string sndPath, bool isVoiceFile = false)
+    {
+        ArgumentNullException.ThrowIfNull(samples);
+        ArgumentException.ThrowIfNullOrEmpty(sndPath);
+
+        File.WriteAllBytes(sndPath, TyrianSndEncoder.Encode(samples, isVoiceFile));
+    }
 }

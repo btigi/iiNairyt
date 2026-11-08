@@ -15,7 +15,7 @@ C# library for interacting with files from the 1995 game Tyrian, developed by Ec
 | PIC    | ✔   |   ✔   | Fullscreen backgrounds
 | SAV    | ✗   |   ✗   | 
 | SHP    | ✔   |   ✔   | Graphics
-| SND    | ✔   |   ✗   | 
+| SND    | ✔   |   ✔   | 
 
 ## Usage
 
@@ -87,6 +87,13 @@ var banks = shp.Banks.ToArray();
 var sprites = banks[bankIndex].Sprites.ToArray();
 sprites[spriteIndex] = ShpSprite.FromRgba(edited, palette);
 banks[bankIndex] = banks[bankIndex] with { Sprites = sprites };
+
+// Sound effects and voices
+var sounds = SndProcessor.Read(@"D:\games\tyrian\tyrian.snd");
+SndProcessor.Write(sounds, @"D:\data\Tyrian\tyrian.snd");
+
+var voices = SndProcessor.Read(@"D:\games\tyrian\voices.snd", isVoiceFile: true);
+SndProcessor.Write(voices, @"D:\data\Tyrian\voices.snd", isVoiceFile: true);
 ```
 
 ## Compiling
